@@ -1,0 +1,173 @@
+{
+  "data": {
+    "6831": {
+      "name": {
+        "en": "dh",
+        "kr": "대한외래"
+      },
+      "floors": {
+        "-2": {
+          "name": {
+            "en": "B2",
+            "kr": "지하2층"
+          },
+          "order": -2,
+          "index": -2,
+          "customPointData": {
+            "2593e5e0-5791-11ea-92d2-893e361a6a29": {
+              "pos": {
+                "x": 929,
+                "y": 1032
+              },
+              "name": {
+                "kr": "지우지마요"
+              },
+              "attributes": {
+                "tel": "010-8420-0808",
+                "desc": "서강희책임"
+              },
+              "radius": 3,
+              "type": 3,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "80e8bc0b-591d-11ea-8465-2f727b4b81f5": {
+              "pos": {
+                "x": 125.14405489012336,
+                "y": 108.14473104890658
+              },
+              "name": {
+                "kr": "TEST2"
+              },
+              "attributes": {},
+              "type": 100,
+              "radius": 5,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "8ab2c5a6-5913-11ea-93f1-9f906c0e6718": {
+              "pos": {
+                "x": 1184,
+                "y": 1101
+              },
+              "name": {
+                "kr": "테스트"
+              },
+              "attributes": {},
+              "radius": 12,
+              "type": 100,
+              "isRestricted": 0,
+              "theta": 1
+            },
+            "cb9b9eee-bc1e-4c42-85ab-ef34ed3821c6": {
+              "pos": {
+                "x": 1191,
+                "y": -1368
+              },
+              "name": {
+                "kr": "엘레베이터"
+              },
+              "attributes": {
+                "elevatorID": "xxxxxxx",
+                "tel": "NA",
+                "elevatorVendor": "xxxxx",
+                "elevatorFloorList": "xxxxx",
+                "desc": "NA"
+              },
+              "radius": 0,
+              "type": 3,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "2f138266-1038-4d84-8e02-05b5cdd96e09": {
+              "pos": {
+                "x": 2004,
+                "y": -1234
+              },
+              "name": {
+                "kr": "채혈실"
+              },
+              "attributes": {
+                "tel": "02-335-2559",
+                "desc": "채혈실, 최종으로 배송된 검체를 수거하는 곳"
+              },
+              "radius": 30,
+              "type": 100,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "72f7445a-f302-4ba3-b20c-6caabb78b551": {
+              "pos": {
+                "x": 1225,
+                "y": -1509
+              },
+              "name": {
+                "kr": "로봇 홈 후보"
+              },
+              "attributes": {
+                "tel": "NA",
+                "desc": "로봇의 홈으로 설정할 수 있는 곳"
+              },
+              "radius": 30,
+              "type": 200,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "e82f0f2f-30db-4934-bd27-27824f0f546d": {
+              "pos": {
+                "x": 931,
+                "y": -1469
+              },
+              "name": {
+                "kr": "관리자"
+              },
+              "attributes": {
+                "tel": "02-111-2222",
+                "desc": "NA"
+              },
+              "radius": 0,
+              "type": 0,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "50f38756-c203-410c-ae92-2fd8cb932332": {
+              "pos": {
+                "x": 689,
+                "y": -1242
+              },
+              "name": {
+                "kr": "복막투석실"
+              },
+              "attributes": {
+                "tel": "02-335-2445",
+                "desc": "복막투석실, 검체를 탑재하는  곳"
+              },
+              "radius": 30,
+              "type": 100,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "6224e452-03e6-44bd-a981-928a184fa4da": {
+              "pos": {
+                "x": 519,
+                "y": -1303
+              },
+              "name": {
+                "kr": "비뇨기과"
+              },
+              "attributes": {
+                "tel": "02-335-3322",
+                "desc": "비뇨기과, 검체를 탑재하는 곳"
+              },
+              "radius": 30,
+              "type": 100,
+              "isRestricted": 0,
+              "theta": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "result": true
+}

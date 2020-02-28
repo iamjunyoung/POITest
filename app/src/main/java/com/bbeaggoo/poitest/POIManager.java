@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
@@ -13,8 +14,11 @@ import com.bbeaggoo.poitest.DatabaseContract.POIColumns;
 import com.bbeaggoo.poitest.data.POIData;
 import com.bbeaggoo.poitest.data.Position;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,6 +27,7 @@ import androidx.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * The {@code <POIManager>} class provides methods to open, reload, find and add some facilities.
@@ -31,11 +36,13 @@ import io.realm.RealmResults;
 public class POIManager extends ContentProvider {
     private static final String TAG = POIManager.class.getSimpleName();
 
-    public static final String _ID = "poi_id";
+    public static final String ID = "_id";
+    public static final String POI_ID = "poi_id";
     public static final String FLOOR_ID = "floor_id";
     public static final String FLOOR_NAME_EN = "floor_name_en";
     public static final String FLOOR_NAME_KR = "floor_name_kr";
     public static final String FLOOR_ORDER = "floor_order";
+    public static final String FLOOR_INDEX = "floor_index";
     public static final String ATTRIBUTE_EL_ID = "attribute_el_id";
     public static final String ATTRIBUTE_EL_VENDER = "attribute_el_vendor";
     public static final String ATTRIBUTE_EL_FLOOR_LIST = "attribute_el_floor_list";
@@ -47,9 +54,11 @@ public class POIManager extends ContentProvider {
     public static final String POSITION_X = "position_x";
     public static final String POSITION_Y = "position_y";
     public static final String POSITION_Z = "position_z";
+    public static final String THETA = "theta";
+    public static final String TYPE = "type";
     public static final String IS_HOME = "is_home";
     public static final String IS_CHARGER = "is_charger";
-    public static final Uri CONTENT_URI = Uri.parse("content://com.bbeaggoo.poitest/pois");
+    public static final String IS_IN_POILIST = "is_in_poi_list";
 
     final String poiName = "poi.json";
     final String largeName = "category_large.json";
@@ -79,6 +88,8 @@ public class POIManager extends ContentProvider {
     }
 
     ArrayList<POIData> allPOIDatas = null;
+
+    DBHelper mOpenHelper = null;
 
     public POIManager() {
 
@@ -122,9 +133,144 @@ public class POIManager extends ContentProvider {
     }
      */
     public void generatePoi() {
-        JSONUtil generatePoi = new JSONUtil(this.context);
+        JSONUtil generatePoi = new JSONUtil(getContext());
         JSONArray array = generatePoi.jsonParsing(generatePoi.getJsonString());
-        open2(array);
+        //open2(array);
+
+        generatePOIDatabase(array);
+    }
+
+    public void generatePOIDatabase(JSONArray array) {
+        try {
+            for (int i = 0 ; i < array.length() ; i++) {
+                Log.d(TAG, "generatePOIDatabase object to db " + i);
+                insertToDB(array.getJSONObject(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertToDB(JSONObject object) {
+        ContentValues cv = new ContentValues();
+        /*
+            POIColumns.POI_ID + " text, " +
+            POIColumns.FLOOR_ID + " text, " +
+            POIColumns.FLOOR_NAME_EN + " text, " +
+            POIColumns.FLOOR_NAME_KR + " text, " +
+            POIColumns.FLOOR_ORDER + " integer, " +
+            POIColumns.ATTRIBUTE_EL_ID + " text, " +
+            POIColumns.ATTRIBUTE_EL_VENDER + " text, " +
+            POIColumns.ATTRIBUTE_EL_FLOOR_LIST + " text, " +
+            POIColumns.ATTRIBUTE_DESC + " text, " +
+            POIColumns.ATTRIBUTE_TEL + " text, " +
+            POIColumns.RADIUS + " integer, " +
+            POIColumns.IS_RESTRICTED + " integer, " +
+            POIColumns.NAME_KR + " text, " +
+            POIColumns.POSITION_X + " integer, " +
+            POIColumns.POSITION_Y + " integer, " +
+            POIColumns.POSITION_Z + " integer, " +
+            POIColumns.THETA + " integer, " +
+            POIColumns.TYPE + " integer, " +
+            POIColumns.IS_HOME + " text, " +
+            POIColumns.IS_CHARGER + " text);";
+         */
+        /*
+            public static final String POI_ID = "poi_id";
+            public static final String FLOOR_ID = "floor_id";
+            public static final String FLOOR_NAME_EN = "floor_name_en";
+            public static final String FLOOR_NAME_KR = "floor_name_kr";
+            public static final String FLOOR_ORDER = "floor_order";
+            public static final String ATTRIBUTE_EL_ID = "attribute_el_id";
+            public static final String ATTRIBUTE_EL_VENDER = "attribute_el_vendor";
+            public static final String ATTRIBUTE_EL_FLOOR_LIST = "attribute_el_floor_list";
+            public static final String ATTRIBUTE_DESC = "attribute_desc";
+            public static final String ATTRIBUTE_TEL = "attribute_tel";
+            public static final String RADIUS = "radius";
+            public static final String IS_RESTRICTED = "is_restricted";
+            public static final String NAME_KR = "name_kr";
+            public static final String POSITION_X = "position_x";
+            public static final String POSITION_Y = "position_y";
+            public static final String POSITION_Z = "position_z";
+            public static final String THETA = "theta";
+            public static final String TYPE = "type";
+            public static final String IS_HOME = "is_home";
+            public static final String IS_CHARGER = "is_charger";
+         */
+            /*
+                    newObject.put("poiId", poiId);
+                    newObject.put("floorId", floor);
+                    newObject.put("floorName", floorsObject.getJSONObject(floor).getJSONObject("name"));
+                    newObject.put("floorOrder", floorsObject.getJSONObject(floor).getInt("order"));
+
+                    newObject.put("attributes", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getJSONObject("attributes"));
+                    newObject.put("radius", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("radius"));
+                    newObject.put("isRestricted", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("isRestricted"));
+                    newObject.put("name", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getJSONObject("name"));
+                    newObject.put("pos", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getJSONObject("pos"));
+                    //pos {"x":1011,"y":-1395}
+                    JSONObject addZPos = floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getJSONObject("pos");
+                    addZPos.put("z", floorsObject.getJSONObject(floor).getInt("order"));
+                    Log.d(TAG, "pos(Added z pos)  " + addZPos);
+
+                    newObject.put("theta", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("theta"));
+                    newObject.put("type", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("type"));
+
+                    newObject.put("isHome", false);
+                    newObject.put("isCharger", false);
+            */
+        try {
+            Log.d("poi", "" + object.getJSONObject("attributes").optString("elevatorID", "N/A") + "  "
+                    + object.getJSONObject("attributes").optString("elevatorVendor", "N/A") + "  "
+                    + object.getJSONObject("attributes").optString("elevatorFloorList", "N/A") + "  "
+                    + object.getJSONObject("attributes").optString("desc", "N/A") + "  "
+                    + object.getJSONObject("attributes").optString("tel", "N/A"));
+            cv.put(POI_ID, object.getString("poiId"));
+            cv.put(FLOOR_ID, object.getString("floorId"));
+            cv.put(FLOOR_NAME_EN, object.getJSONObject("floorName").getString("en"));
+            cv.put(FLOOR_NAME_KR, object.getJSONObject("floorName").getString("kr"));
+            cv.put(FLOOR_ORDER, object.getInt("floorOrder"));
+            cv.put(FLOOR_INDEX, object.getInt("floorIndex"));
+            cv.put(ATTRIBUTE_EL_ID, object.getJSONObject("attributes").optString("elevatorID", "N/A"));
+            cv.put(ATTRIBUTE_EL_VENDER, object.getJSONObject("attributes").optString("elevatorVendor", "N/A"));
+            cv.put(ATTRIBUTE_EL_FLOOR_LIST, object.getJSONObject("attributes").optString("elevatorFloorList", "N/A"));
+            cv.put(ATTRIBUTE_DESC, object.getJSONObject("attributes").optString("desc", "N/A"));
+            cv.put(ATTRIBUTE_TEL, object.getJSONObject("attributes").optString("tel", "N/A"));
+
+            //double  real
+            cv.put(RADIUS, object.getInt("radius"));
+            cv.put(IS_RESTRICTED, object.getInt("isRestricted"));
+            cv.put(NAME_KR, object.getJSONObject("name").getString("kr"));
+            cv.put(POSITION_X, object.getJSONObject("pos").getDouble("x"));
+            cv.put(POSITION_Y, object.getJSONObject("pos").getDouble("y"));
+            cv.put(POSITION_Z, object.getJSONObject("pos").getInt("z"));
+            cv.put(THETA, object.getInt("theta"));
+            cv.put(TYPE, object.getInt("type"));
+            cv.put(IS_HOME, "false");
+            cv.put(IS_CHARGER, "false");
+            cv.put(IS_IN_POILIST, "true");
+            /*
+            boolean isHome = object.getBoolean("isHome");
+            if (isHome) {
+                cv.put(IS_HOME, "true");
+            } else {
+                cv.put(IS_HOME, "false");
+            }
+            boolean isCharger = object.getBoolean("isCharger");
+            if (isCharger) {
+                cv.put(IS_CHARGER, "true");
+            } else {
+                cv.put(IS_CHARGER, "false");
+            }
+            cv.put(IS_IN_POILIST, object.getBoolean("isInPOIList"));
+             */
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Uri retUir  = insert(DatabaseContract.CONTENT_URI, cv);
+        Log.d(TAG, "Insert object to db ");
+
     }
 
     public void open2(JSONArray array) {
@@ -146,37 +292,6 @@ public class POIManager extends ContentProvider {
         String status = "";
         for (POIData poiData : realm.where(POIData.class).findAll()) {
             Log.d(TAG, "\n" + poiData);
-/*
-			status += "\nPoiID : " + poiData.getPoiId() +
-					"  / floorId : " + poiData.getFloorId() +
-					" / floorName : " + poiData.getFloorName() +
-					" / floorOrder : " + poiData.getFlooirOrder() +
-					" / attribute : " + poiData.getAttributes() +
-					" / radius : " + poiData.getRadius() +
-					" / isRestricted : " + poiData.getIsRestricted() +
-					" / name : " + poiData.getName() +
-					" / position : " + poiData.getPoiId() +
-					"/ theta : " + poiData.getTheta() +
-					"/ type : " + poiData.getType() +
-					"/ isHome : " + poiData.isHome() +
-					"/ isDock : " + poiData.isDock();
-
- */
-            /*
-            private String              poiId;
-            private String              floorId;
-            private FloorName           floorName;
-            private int                 floorOrder;
-            private Attribute           attributes;
-            private int                 radius;
-            private int                 isRestricted;
-            private Name                name;
-            private Position            pos;
-            private int                 theta;
-            private int                 type;
-            private boolean             isHome;
-            private boolean             isDock;
-             */
         }
     }
 
@@ -210,7 +325,16 @@ public class POIManager extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
 
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        long rowId = db.insert(DatabaseContract.TABLE_POIS, null, values);
+        getContext().getContentResolver().notifyChange(uri, null);
         return null;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        //return dbManager.insertAll(values);
+        return 0;
     }
 
     public void registerHomePOI(String poiId) { // poiId input exist in DB
@@ -238,6 +362,7 @@ public class POIManager extends ContentProvider {
             }
         });
     }
+
 
     public void registerHomePOI(String newPoiId, int x, int y, int z, int theta) { // new PoiId
 		/*
@@ -276,7 +401,7 @@ public class POIManager extends ContentProvider {
             realm = Realm.getInstance(realmConfig);
         }
         RealmResults<POIData> realmResults = realm.where(POIData.class)
-                .equalTo("isDock", true)
+                .equalTo("isCharger", true)
                 .findAll();
         for (POIData item : realmResults) {
             dockPOIDatas.add(item);
@@ -336,7 +461,7 @@ public class POIManager extends ContentProvider {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                for (POIData poiData : realm.where(POIData.class).equalTo("isDock", true).findAll()) {
+                for (POIData poiData : realm.where(POIData.class).equalTo("isCharger", true).findAll()) {
                     poiData.setCharger(false);
                 }
             }
@@ -369,43 +494,15 @@ public class POIManager extends ContentProvider {
         String status = "";
         for (POIData poiData : realm.where(POIData.class).findAll()) {
             Log.d(TAG, "\n" + poiData);
-			/*
-			status += "\nPoiID : " + poiData.getPoiId() +
-					"  / floorId : " + poiData.getFloorId() +
-					" / floorName : " + poiData.getFloorName() +
-					" / floorOrder : " + poiData.getFlooirOrder() +
-					" / attribute : " + poiData.getAttributes() +
-					" / radius : " + poiData.getRadius() +
-					" / isRestricted : " + poiData.getIsRestricted() +
-					" / name : " + poiData.getName() +
-					" / position : " + poiData.getPoiId() +
-					"/ theta : " + poiData.getTheta() +
-					"/ type : " + poiData.getType() +
-					"/ isHome : " + poiData.isHome() +
-					"/ isDock : " + poiData.isDock();
-
-			*/
-            /*
-            private String              poiId;
-            private String              floorId;
-            private FloorName           floorName;
-            private int                 floorOrder;
-            private Attribute           attributes;
-            private int                 radius;
-            private int                 isRestricted;
-            private Name                name;
-            private Position            pos;
-            private int                 theta;
-            private int                 type;
-            private boolean             isHome;
-            private boolean             isDock;
-             */
         }
     }
 
     @Override
     public boolean onCreate() {
         //this.context = context;
+        Log.d(TAG, "POIManager ContentProvider onCreate" );
+
+        /*
         this.context = getContext();
         floor = floor.isEmpty() ? "1F" : floor;
         Log.d(TAG, "POIManager");
@@ -449,7 +546,7 @@ public class POIManager extends ContentProvider {
                 , new String[] {_ID, FLOOR_ID, FLOOR_NAME_EN, FLOOR_NAME_KR
                         , FLOOR_ORDER, ATTRIBUTE_EL_ID, ATTRIBUTE_EL_VENDER, ATTRIBUTE_EL_FLOOR_LIST
                         , ATTRIBUTE_DESC, ATTRIBUTE_TEL, RADIUS, IS_RESTRICTED, NAME_KR
-                        , POSITION_X, POSITION_Y, POSITION_Z, IS_HOME, IS_CHARGER}
+                        , POSITION_X, POSITION_Y, POSITION_Z, THETA, TYPE, IS_HOME, IS_CHARGER}
                 , null
                 , null
                 , null);
@@ -459,8 +556,14 @@ public class POIManager extends ContentProvider {
                 Log.d("hello", c.getString(0) + "\n");
             }
         }
+        */
 
-        return true;
+        mOpenHelper = new DBHelper(getContext());
+        if (mOpenHelper != null) {
+            generatePoi();
+            return true;
+        }
+        return false;
     }
     /*
         public static final String _ID = "poi_id";
@@ -485,7 +588,8 @@ public class POIManager extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        int match = sUriMatcher.match(uri);
+
+        //int match = sUriMatcher.match(uri);
 
         //ArrayList<POIData> allPOIDatas = new ArrayList<>();
         /*
@@ -494,6 +598,7 @@ public class POIManager extends ContentProvider {
         }
          */
 
+        /*
         MatrixCursor myCursor = new MatrixCursor( new String[]{POIColumns._ID
                 , POIColumns.FLOOR_ID, POIColumns.FLOOR_NAME_EN
                 , POIColumns.FLOOR_NAME_KR, POIColumns.FLOOR_ORDER
@@ -527,7 +632,7 @@ public class POIManager extends ContentProvider {
                         myCursor.addRow(rowData);
                         Log.v("RealmDB", poiData.toString());
                     }
-
+                */
                      /*
                     for (POIData poiData : allPOIDatas) {
                         Object[] rowData = new Object[] {poiData.getPoiId()
@@ -544,7 +649,7 @@ public class POIManager extends ContentProvider {
                         Log.v("RealmDB", poiData.toString());
                     }
                       */
-
+/*
                     break;
 
                 //Expected "query one" Uri: content://com.example.rgher.realmtodo/tasks/{id}
@@ -553,10 +658,11 @@ public class POIManager extends ContentProvider {
             }
 
             myCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         } finally {
             realm.close();
         }
-
+*/
         /*
 
         ArrayList<POIData> allPOIDatas = new ArrayList<>();
@@ -568,9 +674,21 @@ public class POIManager extends ContentProvider {
 
          */
 
-        return myCursor;
+        //return myCursor;
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        Cursor c = null;
+        c = db.query(DatabaseContract.TABLE_POIS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+
+        return c;
 
     }
+
 
     @Nullable
     @Override
@@ -582,11 +700,20 @@ public class POIManager extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count;
+        count = db.delete(DatabaseContract.TABLE_POIS, selection, selectionArgs);
+        return count;
     }
+
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count;
+        count = db.update(DatabaseContract.TABLE_POIS, values, selection, selectionArgs);
+        return count;
     }
+
+
 }

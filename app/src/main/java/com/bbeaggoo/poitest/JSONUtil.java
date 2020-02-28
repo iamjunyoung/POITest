@@ -45,10 +45,10 @@ public class JSONUtil {
                     newObject = new JSONObject();
 
                     newObject.put("poiId", poiId);
-                    newObject.put("floorId", floor);
+                    newObject.put("floorId", floor); // Not SNUH_SEOUL_DH_B2 but -2
                     newObject.put("floorName", floorsObject.getJSONObject(floor).getJSONObject("name"));
                     newObject.put("floorOrder", floorsObject.getJSONObject(floor).getInt("order"));
-
+                    newObject.put("floorIndex", floorsObject.getJSONObject(floor).getInt("index"));
                     newObject.put("attributes", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getJSONObject("attributes"));
                     newObject.put("radius", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("radius"));
                     newObject.put("isRestricted", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("isRestricted"));
@@ -62,8 +62,9 @@ public class JSONUtil {
                     newObject.put("theta", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("theta"));
                     newObject.put("type", floorsObject.getJSONObject(floor).getJSONObject("customPointData").getJSONObject(poiId).getInt("type"));
 
-                    newObject.put("isHome", false);
-                    newObject.put("isDock", false);
+                    newObject.put("isHome", false); // default false
+                    newObject.put("isCharger", false); // default false
+                    newObject.put("isInPOIList", true); // default true
                     Log.d(TAG, "transfer " + newObject);
                     resultArray.put(newObject);
                 }
@@ -80,7 +81,8 @@ public class JSONUtil {
 
         try {
             //InputStream is = context.getAssets().open("poiDataSample.json");
-            InputStream is = context.getAssets().open("sample_customPointList_fixed.json");
+            //InputStream is = context.getAssets().open("sample_customPointList_fixed.json");
+            InputStream is = context.getAssets().open("sample_customPointList_200227.json"); // 외부 Download 하위에 있는거로 가져올 수 있도록 수정.
             int fileSize = is.available();
             byte[] buffer = new byte[fileSize];
             is.read(buffer);
