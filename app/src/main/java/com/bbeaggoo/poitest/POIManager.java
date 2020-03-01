@@ -5,16 +5,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import com.bbeaggoo.poitest.DatabaseContract.POIColumns;
 import com.bbeaggoo.poitest.data.POIData;
 import com.bbeaggoo.poitest.data.Position;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +24,6 @@ import androidx.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * The {@code <POIManager>} class provides methods to open, reload, find and add some facilities.
@@ -324,7 +320,9 @@ public class POIManager extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-
+        // getWritableDatabase() 또는 getReadableDatabase()가 호출되어야
+        // SQLiteOpenHelper 의 onCreate()가 호출되어 테이블이 생성된다.
+        // 이건 onUpgrade 도 마찬가지일듯? <- test 해보자.
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(DatabaseContract.TABLE_POIS, null, values);
         getContext().getContentResolver().notifyChange(uri, null);
@@ -558,7 +556,12 @@ public class POIManager extends ContentProvider {
         }
         */
 
-        mOpenHelper = new DBHelper(getContext());
+
+        //이 DBHelper 생성자를 어디서 호출해주는게 좋은가?
+        //
+        //new DBHelper(context, DB_FILE_NAME, null, 20200301); // <- 20200301 값은 json파일로부터 받아오면 되지 않을까?
+        //DBHelper(  context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        mOpenHelper = new DBHelper(getContext()); // SQLiteOpenHelper의 생성자만 호출. DB의 onCreate()는 아직 호출이 안된다.
         if (mOpenHelper != null) {
             generatePoi();
             return true;

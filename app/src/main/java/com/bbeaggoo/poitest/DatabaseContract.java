@@ -36,6 +36,9 @@ public class DatabaseContract {
             POIColumns.IS_CHARGER + " text, " +
             POIColumns.IS_IN_POILIST + " text);";
 
+    public static final String DB_DROP = "DROP TABLE IF EXIST " + TABLE_POIS;
+
+
     public static final class POIColumns implements BaseColumns {
         public static final String ID = "_id";
         public static final String POI_ID = "poi_id";
