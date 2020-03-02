@@ -1,0 +1,108 @@
+{
+  "data": {
+    "6831": {
+      "buildingCode": "6831",
+      "name": {
+        "en": "LG Science Park",
+        "kr": "LG사이언스파크"
+      },
+      "floors": {
+        "1": {
+          "floorCode": "1",
+          "name": {
+            "en": "1F",
+            "kr": "1층"
+          },
+          "order": 0,
+          "index": 1,
+          "customPointData": {
+            "8ab2c5a6-5913-11ea-93f1-9f906c0e6718": {
+              "cpId": "8ab2c5a6-5913-11ea-93f1-9f906c0e6718",
+              "pos": {
+                "x": 17.6,
+                "y": 6.71679436618501
+              },
+              "name": {
+                "kr": "1층E/L 대기"
+              },
+              "attributes": {
+                
+              },
+              "radius": 12,
+              "type": 1001,
+              "isRestricted": 0,
+              "theta": 0
+            },
+            "2593e5e0-5791-11ea-92d2-893e361a6a29": {
+              "cpId": "2593e5e0-5791-11ea-92d2-893e361a6a29",
+              "pos": {
+                "x": 17.48,
+                "y": 8.71679436618501
+              },
+              "name": {
+                "kr": "1층E/L안"
+              },
+              "attributes": {
+                "elevatorId": "0012312",
+                "elevatorVendor": 1,
+                "floorList": "1-2"
+              },
+              "radius": 3,
+              "type": 3,
+              "isRestricted": 0,
+              "theta": 0
+            }
+          }
+        },
+        "2": {
+          "floorCode": "2",
+          "name": {
+            "en": "2F",
+            "kr": "2층"
+          },
+          "order": 1,
+          "index": 2,
+          "customPointData": {
+            "2593e5e0-5791-11ea-92d2-893e361a6a28": {
+              "cpId": "2593e5e0-5791-11ea-92d2-893e361a6a28",
+              "pos": {
+                "x": 17.6,
+                "y": 6.71679436618501
+              },
+              "name": {
+                "kr": "2층E/L밖"
+              },
+              "attributes": {
+                
+              },
+              "radius": 12,
+              "type": 1001,
+              "isRestricted": 0,
+              "theta": 1
+            },
+            "2193e5e0-5731-11ea-92d2-893e362a2a29": {
+              "cpId": "2193e5e0-5731-11ea-92d2-893e362a2a29",
+              "pos": {
+                "x": 17.48,
+                "y": 8.71679436618501
+              },
+              "name": {
+                "kr": "2층E/L안"
+              },
+              "attributes": {
+                "elevatorId": "0012312",
+                "elevatorVendor": 1,
+                "floorList": "1-2"
+              },
+              "radius": 3,
+              "type": 3,
+              "isRestricted": 0,
+              "theta": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "result": true
+}
