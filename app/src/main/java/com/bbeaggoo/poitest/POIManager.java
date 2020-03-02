@@ -29,9 +29,6 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
-import static com.bbeaggoo.poitest.DatabaseContract.DATABASE_CREATE;
-import static com.bbeaggoo.poitest.DatabaseContract.TABLE_POIS;
-
 /**
  * The {@code <POIManager>} class provides methods to open, reload, find and add some facilities.
  * POI(Point Of Interest) data file.</p>
@@ -138,6 +135,8 @@ public class POIManager extends ContentProvider {
     public void generatePoi() {
         JSONUtil generatePoi = new JSONUtil(getContext());
         JSONArray array = generatePoi.jsonParsing(generatePoi.getJsonString());
+        //open2(array);
+
         generatePOIDatabase(array);
     }
 
@@ -559,13 +558,8 @@ public class POIManager extends ContentProvider {
         }
         */
 
-        // 충전중이고 Event를 받으면 아래 코드를 그대로 실행해주면 됨. 날리고 create하고 generate
-        mOpenHelper = new DBHelper(getContext()); // DBHelper 싱글톤 선언 필요.
+        mOpenHelper = new DBHelper(getContext());
         if (mOpenHelper != null) {
-            SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_POIS);
-            db.execSQL(DATABASE_CREATE);
-
             generatePoi();
             return true;
         }
